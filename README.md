@@ -1,31 +1,25 @@
-# New Package for Stacked
+# Firebase Authentication Service
 
-Created from the `package-template`.
+This package provides a `FirebaseAuthenticationService` that provides the following logins.
 
-After creating the repository, proceed with the following instructions:
+- Email
+- Google
+- Apple
+- Facebook (Removed `flutter_facebook_auth` dependency and its implementation since it was causing a `MissingPluginException` if the app isn't setup for Facebook Auth)
 
-- Update the repository settings to adhere to the conventions:
-  - General:
-    - No Wikis
-    - No Issues
-    - No Sponsorships
-    - Preserve this repository
-    - No Discussions
-    - No Projects
-    - Don't allow merge commits
-    - Allow squash merging with default commit message set to "Default to pull request title and commit details"
-    - Don't allow rebase merging
-    - Always suggest updating pull requests
-    - Allow auto-merge
-    - Automatically delete head branches
-  - Branch protection rule (`main`):
-    - Require a pull request before merging
-    - Dismiss stale pull request approvals when new commits are pushed
-    - Allow specified actors to bypass required pull requests -> `Dane Mackier` (or whoever is the current owner of the personal access token in the organization secrets `REPO_DEPLOYMENT_TOKEN`)
-    - Require status checks to pass before merging
-    - Require branches to be up to date before merging
-    - Add status check `Linting and Testing` (to select this, the workflow must have been run at least once. This can be done manually since the workflow has "workflow_dispatch" as a trigger)
-    - Require conversation resolution before merging
-    - Require linear history
-- Create the flutter package with `flutter create -t package --project-name NAME .`
-- Update the content in the `README` file.
+It wraps the functionality for those three auth providers. Examples to come soon. This package is being published to improve the [BoxtOut tutorial](https://youtube.com/playlist?list=PLdTodMosi-BzqMe7fU9Bin3z14_hqNHRA) for setting up Firebase Auth. So it's barebones for now. The functionality works great, at the moment I just don't have the time to write a full readme tutorial along with the examples. that will come soon.
+
+## Future Development
+
+- [ ] Add functionality to set the logger or use a default one
+- [ ] Add the codes thrown from the service into the readme
+- [ ] Add option to throw exceptions instead of returning a `FirebaseAuthenticationResult`
+- [ ] Add example to the package
+- [ ] Add a proper readme
+- [ ] Add examples into the readme
+- [ ] Add mobile authentication option (implementation already exists, it just needs to be moved in here)
+- [ ] Add other authentication providers
+
+### Breaking Change
+
+Removed `flutter_facebook_auth` dependency and its implementation since it was causing a `MissingPluginException` if the app isn't setup for Facebook Auth
