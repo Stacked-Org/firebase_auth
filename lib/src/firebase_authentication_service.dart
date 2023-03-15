@@ -480,16 +480,20 @@ class FirebaseAuthenticationResult {
   /// Firebase user
   final User? user;
 
+  /// Firebase additional user information
+  final AdditionalUserInfo? additionalUserInfo;
+
   /// Contains the error message for the request
   final String? errorMessage;
   final String? exceptionCode;
 
-  FirebaseAuthenticationResult({this.user})
+  FirebaseAuthenticationResult({this.user, this.additionalUserInfo})
       : errorMessage = null,
         exceptionCode = null;
 
   FirebaseAuthenticationResult.error({this.errorMessage, this.exceptionCode})
-      : user = null;
+      : user = null,
+        additionalUserInfo = null;
 
   /// Returns true if the response has an error associated with it
   bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
