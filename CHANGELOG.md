@@ -1,3 +1,10 @@
+## [2.19.1](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.0...v2.19.1) (2023-03-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency google_sign_in to v6 ([#1](https://github.com/Stacked-Org/firebase_auth/issues/1)) ([32f6d7b](https://github.com/Stacked-Org/firebase_auth/commit/32f6d7bdf19f94e4e76fbc64758eeb83d13b92c6))
+
 # [2.19.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.18.0...v2.19.0) (2023-03-15)
 
 
