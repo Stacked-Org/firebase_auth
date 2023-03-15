@@ -1,3 +1,10 @@
+# [2.19.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.18.0...v2.19.0) (2023-03-15)
+
+
+### Features
+
+* add Google Sign in support for Web platform ([#2](https://github.com/Stacked-Org/firebase_auth/issues/2)) ([5accb27](https://github.com/Stacked-Org/firebase_auth/commit/5accb2730f9947e46c9d560c4c3c3efbe5151990))
+
 ## 0.2.18
 
 - Improves signInWithApple. Made asking for full name configurable
