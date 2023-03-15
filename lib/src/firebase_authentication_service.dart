@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -66,34 +67,60 @@ class FirebaseAuthenticationService {
     }
   }
 
+  /// Authenticates a user through Firebase using Google Provider.
+  ///
+  /// Supported platforms:
+  ///   - Android
+  ///   - iOS
+  ///   - Web
   Future<FirebaseAuthenticationResult> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
-      if (googleSignInAccount == null) {
-        log?.i('Process is canceled by the user');
-        return FirebaseAuthenticationResult.error(
-          errorMessage: 'Google Sign In has been canceled by the user',
-          exceptionCode: 'canceled',
+      UserCredential userCredential;
+
+      /// On the web, the Firebase SDK provides support for automatically
+      /// handling the authentication flow.
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+
+        userCredential = await FirebaseAuth.instance.signInWithPopup(
+          googleProvider,
         );
       }
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
+      /// On native platforms, a 3rd party library, like GoogleSignIn, is
+      /// required to trigger the authentication flow.
+      else {
+        final GoogleSignInAccount? googleSignInAccount =
+            await _googleSignIn.signIn();
+        if (googleSignInAccount == null) {
+          log?.i('Process is canceled by the user');
+          return FirebaseAuthenticationResult.error(
+            errorMessage: 'Google Sign In has been canceled by the user',
+            exceptionCode: 'canceled',
+          );
+        }
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
 
-      final result = await _signInWithCredential(credential);
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        userCredential = await _signInWithCredential(credential);
+      }
 
       // Link the pending credential with the existing account
       if (_pendingCredential != null) {
-        await result.user?.linkWithCredential(_pendingCredential!);
+        await userCredential.user?.linkWithCredential(_pendingCredential!);
         _clearPendingData();
       }
 
-      return FirebaseAuthenticationResult(user: result.user);
+      return FirebaseAuthenticationResult(
+        user: userCredential.user,
+        additionalUserInfo: userCredential.additionalUserInfo,
+      );
     } on FirebaseAuthException catch (e) {
       log?.e(e);
       return FirebaseAuthenticationResult.error(
@@ -480,16 +507,20 @@ class FirebaseAuthenticationResult {
   /// Firebase user
   final User? user;
 
+  /// Firebase additional user information
+  final AdditionalUserInfo? additionalUserInfo;
+
   /// Contains the error message for the request
   final String? errorMessage;
   final String? exceptionCode;
 
-  FirebaseAuthenticationResult({this.user})
+  FirebaseAuthenticationResult({this.user, this.additionalUserInfo})
       : errorMessage = null,
         exceptionCode = null;
 
   FirebaseAuthenticationResult.error({this.errorMessage, this.exceptionCode})
-      : user = null;
+      : user = null,
+        additionalUserInfo = null;
 
   /// Returns true if the response has an error associated with it
   bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
