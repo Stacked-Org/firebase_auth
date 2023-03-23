@@ -1,3 +1,10 @@
+## [2.19.2](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.1...v2.19.2) (2023-03-23)
+
+
+### Bug Fixes
+
+* expose User class from FirebaseAuth package ([#3](https://github.com/Stacked-Org/firebase_auth/issues/3)) ([2ea1679](https://github.com/Stacked-Org/firebase_auth/commit/2ea16790d96422d9b7a59c51304e58a663eb6194))
+
 ## [2.19.1](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.0...v2.19.1) (2023-03-15)
 
 
