@@ -19,10 +19,12 @@ class FirebaseAuthenticationService {
   final _googleSignIn = GoogleSignIn();
 
   FirebaseAuthenticationService({
-    @Deprecated('Pass in the appleRedirectUri through the signInWithApple function')
-        String? appleRedirectUri,
-    @Deprecated('Pass in the appleClientId through the signInWithApple function')
-        String? appleClientId,
+    @Deprecated(
+        'Pass in the appleRedirectUri through the signInWithApple function')
+    String? appleRedirectUri,
+    @Deprecated(
+        'Pass in the appleClientId through the signInWithApple function')
+    String? appleClientId,
     this.log,
   });
 
