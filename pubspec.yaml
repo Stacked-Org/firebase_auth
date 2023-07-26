@@ -22,7 +22,7 @@ dependencies:
   sign_in_with_apple: ^4.3.0
 
   # logging
-  logger: ^1.4.0
+  logger: ^2.0.0
 
   crypto: ^3.0.3
 
