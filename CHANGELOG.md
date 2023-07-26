@@ -1,3 +1,10 @@
+## [2.19.3](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.2...v2.19.3) (2023-07-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency logger to v2 ([#9](https://github.com/Stacked-Org/firebase_auth/issues/9)) ([8ee5db8](https://github.com/Stacked-Org/firebase_auth/commit/8ee5db8b2996cf5b0c5213c008fddf533de6804e))
+
 ## [2.19.2](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.1...v2.19.2) (2023-03-23)
 
 
