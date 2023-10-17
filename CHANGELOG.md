@@ -1,3 +1,10 @@
+## [2.19.5](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.4...v2.19.5) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency firebase_auth_platform_interface to v7 ([#14](https://github.com/Stacked-Org/firebase_auth/issues/14)) ([d3f0724](https://github.com/Stacked-Org/firebase_auth/commit/d3f07245497c44164ccfd9f26da18c405cb48dd9))
+
 ## [2.19.4](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.3...v2.19.4) (2023-07-31)
 
 
