@@ -1,3 +1,10 @@
+## [2.19.6](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.5...v2.19.6) (2023-10-23)
+
+
+### Bug Fixes
+
+* Update sign_in_with_apple for compatibility with Gradle 8.0 ([#16](https://github.com/Stacked-Org/firebase_auth/issues/16)) ([792bf2f](https://github.com/Stacked-Org/firebase_auth/commit/792bf2f3242d9560f711fda90abce72af789e024))
+
 ## [2.19.5](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.4...v2.19.5) (2023-10-17)
 
 
