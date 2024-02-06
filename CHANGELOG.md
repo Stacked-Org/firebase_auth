@@ -1,3 +1,10 @@
+### Features
+
+* Add implementation of Facebook authentication via `flutter_facebook_auth` dependency
+
+## [2.20.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.6...v2.20.0) (2024-02-02)
+
+
 ## [2.19.6](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.5...v2.19.6) (2023-10-23)
 
 
