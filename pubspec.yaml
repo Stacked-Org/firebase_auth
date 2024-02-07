@@ -23,7 +23,7 @@ dependencies:
   flutter_facebook_auth: ^6.0.4
 
   # logging
-  logger: ^1.4.0
+  logger: ^2.0.0
 
   crypto: ^3.0.3
 
