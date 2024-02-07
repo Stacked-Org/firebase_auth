@@ -1,3 +1,10 @@
+# [2.20.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.6...v2.20.0) (2024-02-07)
+
+
+### Features
+
+* add Facebook authentication support ([#17](https://github.com/Stacked-Org/firebase_auth/issues/17)) ([2cd6afc](https://github.com/Stacked-Org/firebase_auth/commit/2cd6afc89dbb23e56072835e46f1503fa665dd04))
+
 ## [2.19.6](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.5...v2.19.6) (2023-10-23)
 
 
