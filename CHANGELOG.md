@@ -73,7 +73,7 @@
 
 ## 0.2.12
 - Adds sign in with phone number
-- Adds verify otp 
+- Adds verify otp
 
 ## 0.2.11
 

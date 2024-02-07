@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -16,7 +17,7 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
-  final _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   FirebaseAuthenticationService({
     @Deprecated(
@@ -75,7 +76,8 @@ class FirebaseAuthenticationService {
   ///   - Android
   ///   - iOS
   ///   - Web
-  Future<FirebaseAuthenticationResult> signInWithGoogle() async {
+  Future<FirebaseAuthenticationResult> signInWithGoogle(
+      {String? webLoginHint}) async {
     try {
       UserCredential userCredential;
 
@@ -83,7 +85,8 @@ class FirebaseAuthenticationService {
       /// handling the authentication flow.
       if (kIsWeb) {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
-        googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+        googleProvider.setCustomParameters(
+            {'login_hint': webLoginHint ?? 'user@example.com'});
 
         userCredential = await FirebaseAuth.instance.signInWithPopup(
           googleProvider,
@@ -111,6 +114,78 @@ class FirebaseAuthenticationService {
         );
 
         userCredential = await _signInWithCredential(credential);
+      }
+
+      // Link the pending credential with the existing account
+      if (_pendingCredential != null) {
+        await userCredential.user?.linkWithCredential(_pendingCredential!);
+        _clearPendingData();
+      }
+
+      return FirebaseAuthenticationResult(
+        user: userCredential.user,
+        additionalUserInfo: userCredential.additionalUserInfo,
+      );
+    } on FirebaseAuthException catch (e) {
+      log?.e(e);
+      return FirebaseAuthenticationResult.error(
+        errorMessage: getErrorMessageFromFirebaseException(e),
+        exceptionCode: e.code,
+      );
+    } catch (e) {
+      log?.e(e);
+      return FirebaseAuthenticationResult.error(errorMessage: e.toString());
+    }
+  }
+
+  /// Authenticates a user through Firebase using Facebook Provider.
+  ///
+  /// Supported platforms:
+  ///   - Android
+  ///   - iOS
+  ///   - Web
+  Future<FirebaseAuthenticationResult> signInWithFacebook(
+      {String? webLoginHint}) async {
+    try {
+      UserCredential userCredential;
+
+      /// On the web, the Firebase SDK provides support for automatically
+      /// handling the authentication flow.
+      if (kIsWeb) {
+        FacebookAuthProvider facebookProvider = FacebookAuthProvider();
+        facebookProvider.setCustomParameters(
+            {'login_hint': webLoginHint ?? 'user@example.com'});
+
+        userCredential = await FirebaseAuth.instance.signInWithPopup(
+          facebookProvider,
+        );
+      }
+
+      /// On native platforms, a 3rd party library, like FacebookSignIn, is
+      /// required to trigger the authentication flow.
+      else {
+        final LoginResult facebookLoginResult =
+            await FacebookAuth.instance.login();
+        if (facebookLoginResult.status == LoginStatus.cancelled) {
+          log?.i('Process is canceled by the user');
+          return FirebaseAuthenticationResult.error(
+            errorMessage: 'Facebook Sign In has been canceled by the user',
+            exceptionCode: 'canceled',
+          );
+        } else if (facebookLoginResult.status == LoginStatus.failed) {
+          log?.i('Login failed with error: ${facebookLoginResult.message}');
+          return FirebaseAuthenticationResult.error(
+            errorMessage:
+                'Facebook Sign In has failed with error: ${facebookLoginResult.message}',
+            exceptionCode: 'failed',
+          );
+        }
+
+        final OAuthCredential facebookAuthCredential =
+            FacebookAuthProvider.credential(
+                facebookLoginResult.accessToken!.token);
+
+        userCredential = await _signInWithCredential(facebookAuthCredential);
       }
 
       // Link the pending credential with the existing account
@@ -232,17 +307,17 @@ class FirebaseAuthenticationService {
   /// Anonymous Login
   Future<FirebaseAuthenticationResult> loginAnonymously() async {
     try {
-      log?.d('Anonymoys Login');
+      log?.d('Anonymous Login');
       final result = await firebaseAuth.signInAnonymously();
 
       return FirebaseAuthenticationResult(user: result.user);
     } on FirebaseAuthException catch (e) {
-      log?.e('A firebase exception has occured. $e');
+      log?.e('A firebase exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           exceptionCode: e.code.toLowerCase(),
           errorMessage: getErrorMessageFromFirebaseException(e));
     } on Exception catch (e) {
-      log?.e('A general exception has occured. $e');
+      log?.e('A general exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           errorMessage:
               'We could not log into your account at this time. Please try again.');
@@ -270,12 +345,12 @@ class FirebaseAuthenticationService {
 
       return FirebaseAuthenticationResult(user: result.user);
     } on FirebaseAuthException catch (e) {
-      log?.e('A firebase exception has occured. $e');
+      log?.e('A firebase exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           exceptionCode: e.code.toLowerCase(),
           errorMessage: getErrorMessageFromFirebaseException(e));
     } on Exception catch (e) {
-      log?.e('A general exception has occured. $e');
+      log?.e('A general exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           errorMessage:
               'We could not log into your account at this time. Please try again.');
@@ -299,12 +374,12 @@ class FirebaseAuthenticationService {
 
       return FirebaseAuthenticationResult(user: result.user);
     } on FirebaseAuthException catch (e) {
-      log?.e('A firebase exception has occured. $e');
+      log?.e('A firebase exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           exceptionCode: e.code.toLowerCase(),
           errorMessage: getErrorMessageFromFirebaseException(e));
     } on Exception catch (e) {
-      log?.e('A general exception has occured. $e');
+      log?.e('A general exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
           errorMessage:
               'We could not create your account at this time. Please try again.');
@@ -414,13 +489,13 @@ class FirebaseAuthenticationService {
 
       return FirebaseAuthenticationResult(user: userCredential.user);
     } on FirebaseAuthException catch (e) {
-      log?.e('A Firebase exception has occured. $e');
+      log?.e('A Firebase exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
         exceptionCode: e.code.toLowerCase(),
         errorMessage: getErrorMessageFromFirebaseException(e),
       );
     } on Exception catch (e) {
-      log?.e('A general exception has occured. $e');
+      log?.e('A general exception has occurred. $e');
       return FirebaseAuthenticationResult.error(
         errorMessage:
             'We could not authenticate with OTP at this time. Please try again.',
@@ -430,12 +505,13 @@ class FirebaseAuthenticationService {
 
   /// Sign out of the social accounts that have been used
   Future logout() async {
-    log?.i('');
+    log?.i('logout');
 
     try {
+      _clearPendingData();
       await firebaseAuth.signOut();
       await _googleSignIn.signOut();
-      _clearPendingData();
+      await FacebookAuth.instance.logOut();
     } catch (e) {
       log?.e('Could not sign out of social account. $e');
     }
@@ -485,6 +561,16 @@ class FirebaseAuthenticationService {
   /// Update the [email] of the Firebase User
   Future updateEmail(String email) async {
     await firebaseAuth.currentUser?.updateEmail(email);
+  }
+
+  /// Update the [displayName] of the Firebase User
+  Future updateDisplayName(String displayName) async {
+    await firebaseAuth.currentUser?.updateDisplayName(displayName);
+  }
+
+  /// Update the [photoURL] of the Firebase User
+  Future updatePhotoURL(String photoUrl) async {
+    await firebaseAuth.currentUser?.updatePhotoURL(photoUrl);
   }
 
   /// Generates a cryptographically secure random nonce, to be included in a
