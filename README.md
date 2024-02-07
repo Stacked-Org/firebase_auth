@@ -1,11 +1,12 @@
 # Firebase Authentication Service [![Pub Version](https://img.shields.io/pub/v/stacked_firebase_auth)](https://pub.dev/packages/stacked_firebase_auth)
 
-This package is meant to work with the [Stacked framework](https://pub.dev/packages/stacked) and provides a `FirebaseAuthenticationService` that provides the following logins.
+This package is meant to work with the [Stacked framework](https://pub.dev/packages/stacked) and provides a `FirebaseAuthenticationService` that provides the following logins:
 
-- [Email](#Integrate-email-authentication)
+- [Email/password](#integrate-emailpassword-authentication)
 - [Google](#Google)
 - [Apple](#Apple)
 - [Facebook](#Facebook)
+- [Anonymous](#Integrate-anonymous-authentication)
 
 It wraps the functionality for those four auth providers. Examples to come soon. This package has initially been published to improve the [BoxtOut tutorial](https://youtube.com/playlist?list=PLdTodMosi-BzqMe7fU9Bin3z14_hqNHRA) for setting up Firebase Auth.
 
@@ -25,7 +26,7 @@ This package is relying on the following great packages to support the social pr
     1. [Google](#Google)
     2. [Apple](#Apple)
     3. [Facebook](#Facebook)
-5. [Integrate email authentication](#Integrate-email-authentication)
+5. [Integrate email/password authentication](#integrate-emailpassword-authentication)
 6. [Integrate anonymous authentication](#Integrate-anonymous-authentication)
 7. [Logout](#Logout)
 8. [Troubleshooting](#Troubleshooting)
