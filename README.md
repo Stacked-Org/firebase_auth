@@ -103,7 +103,7 @@ class App {}
 
 ```
 
-4. Regrenerate your app via the Stacked CLI: `stacked generate`
+4. Regenerate your app via the Stacked CLI: `stacked generate`
 5. You can now fetch and use the `FirebaseAuthenticationService` from `locator<FirebaseAuthenticationService>()`. 
 
 ### Integrate the social authentication providers
