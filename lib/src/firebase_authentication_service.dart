@@ -52,7 +52,6 @@ class FirebaseAuthenticationService {
   bool get hasUser {
     return firebaseAuth.currentUser != null;
   }
-  
   /// Exposes the authStateChanges functionality.
   Stream<User?> get authStateChanges {
     return firebaseAuth.authStateChanges();
@@ -86,9 +85,7 @@ class FirebaseAuthenticationService {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.setCustomParameters(
             {'login_hint': webLoginHint ?? 'user@example.com'});
-        for (var scope in scopes ?? []) {
-          googleProvider.addScope(scope);
-        }
+        (scopes ?? []).forEach(googleProvider.addScope);
         userCredential = await FirebaseAuth.instance.signInWithPopup(
           googleProvider,
         );
