@@ -52,7 +52,7 @@ class FirebaseAuthenticationService {
   bool get hasUser {
     return firebaseAuth.currentUser != null;
   }
-
+  
   /// Exposes the authStateChanges functionality.
   Stream<User?> get authStateChanges {
     return firebaseAuth.authStateChanges();
@@ -77,17 +77,18 @@ class FirebaseAuthenticationService {
   ///   - iOS
   ///   - Web
   Future<FirebaseAuthenticationResult> signInWithGoogle(
-      {String? webLoginHint}) async {
+      {String? webLoginHint, List<String>? scopes}) async {
     try {
       UserCredential userCredential;
-
       /// On the web, the Firebase SDK provides support for automatically
       /// handling the authentication flow.
       if (kIsWeb) {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.setCustomParameters(
             {'login_hint': webLoginHint ?? 'user@example.com'});
-
+        for (var scope in scopes ?? []) {
+          googleProvider.addScope(scope);
+        }
         userCredential = await FirebaseAuth.instance.signInWithPopup(
           googleProvider,
         );
