@@ -17,6 +17,7 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
+  String? _oAuthAccessToken;
   GoogleSignIn? _googleSignIn;
 
   FirebaseAuthenticationService({
@@ -35,12 +36,17 @@ class FirebaseAuthenticationService {
   Future<UserCredential> _signInWithCredential(
     AuthCredential credential,
   ) async {
-    return firebaseAuth.signInWithCredential(credential);
+    _oAuthAccessToken = credential.accessToken;
+    return await firebaseAuth.signInWithCredential(credential);
   }
 
   /// Returns the current logged in Firebase User
   User? get currentUser {
     return firebaseAuth.currentUser;
+  }
+
+  String? get oAuthAccessToken {
+    return _oAuthAccessToken;
   }
 
   /// Returns the latest userToken stored in the Firebase Auth lib
@@ -113,6 +119,7 @@ class FirebaseAuthenticationService {
           idToken: googleSignInAuthentication.idToken,
         );
 
+        _oAuthAccessToken = googleSignInAuthentication.accessToken;
         userCredential = await _signInWithCredential(credential);
       }
 
@@ -125,6 +132,7 @@ class FirebaseAuthenticationService {
       return FirebaseAuthenticationResult(
         user: userCredential.user,
         additionalUserInfo: userCredential.additionalUserInfo,
+        oAuthAccessToken: userCredential.credential?.accessToken,
       );
     } on FirebaseAuthException catch (e) {
       log?.e(e);
@@ -597,17 +605,19 @@ class FirebaseAuthenticationResult {
 
   /// Firebase additional user information
   final AdditionalUserInfo? additionalUserInfo;
+  final String? oAuthAccessToken;
 
   /// Contains the error message for the request
   final String? errorMessage;
   final String? exceptionCode;
 
-  FirebaseAuthenticationResult({this.user, this.additionalUserInfo})
+  FirebaseAuthenticationResult({this.user, this.additionalUserInfo, this.oAuthAccessToken})
       : errorMessage = null,
         exceptionCode = null;
 
   FirebaseAuthenticationResult.error({this.errorMessage, this.exceptionCode})
       : user = null,
+        oAuthAccessToken = null,
         additionalUserInfo = null;
 
   /// Returns true if the response has an error associated with it
