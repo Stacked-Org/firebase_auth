@@ -17,7 +17,6 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
-  String? _oAuthAccessToken;
   GoogleSignIn? _googleSignIn;
 
   FirebaseAuthenticationService({
@@ -36,17 +35,12 @@ class FirebaseAuthenticationService {
   Future<UserCredential> _signInWithCredential(
     AuthCredential credential,
   ) async {
-    _oAuthAccessToken = credential.accessToken;
     return await firebaseAuth.signInWithCredential(credential);
   }
 
   /// Returns the current logged in Firebase User
   User? get currentUser {
     return firebaseAuth.currentUser;
-  }
-
-  String? get oAuthAccessToken {
-    return _oAuthAccessToken;
   }
 
   /// Returns the latest userToken stored in the Firebase Auth lib
@@ -86,6 +80,7 @@ class FirebaseAuthenticationService {
       {String? webLoginHint, List<String>? scopes}) async {
     try {
       UserCredential userCredential;
+
       /// On the web, the Firebase SDK provides support for automatically
       /// handling the authentication flow.
       if (kIsWeb) {
@@ -119,7 +114,6 @@ class FirebaseAuthenticationService {
           idToken: googleSignInAuthentication.idToken,
         );
 
-        _oAuthAccessToken = googleSignInAuthentication.accessToken;
         userCredential = await _signInWithCredential(credential);
       }
 
@@ -611,7 +605,8 @@ class FirebaseAuthenticationResult {
   final String? errorMessage;
   final String? exceptionCode;
 
-  FirebaseAuthenticationResult({this.user, this.additionalUserInfo, this.oAuthAccessToken})
+  FirebaseAuthenticationResult(
+      {this.user, this.additionalUserInfo, this.oAuthAccessToken})
       : errorMessage = null,
         exceptionCode = null;
 
