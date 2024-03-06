@@ -17,7 +17,7 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  GoogleSignIn? _googleSignIn;
 
   FirebaseAuthenticationService({
     @Deprecated(
@@ -52,6 +52,7 @@ class FirebaseAuthenticationService {
   bool get hasUser {
     return firebaseAuth.currentUser != null;
   }
+
   /// Exposes the authStateChanges functionality.
   Stream<User?> get authStateChanges {
     return firebaseAuth.authStateChanges();
@@ -94,8 +95,9 @@ class FirebaseAuthenticationService {
       /// On native platforms, a 3rd party library, like GoogleSignIn, is
       /// required to trigger the authentication flow.
       else {
+        _googleSignIn = GoogleSignIn(scopes: scopes ?? []);
         final GoogleSignInAccount? googleSignInAccount =
-            await _googleSignIn.signIn();
+            await _googleSignIn!.signIn();
         if (googleSignInAccount == null) {
           log?.i('Process is canceled by the user');
           return FirebaseAuthenticationResult.error(
@@ -508,7 +510,7 @@ class FirebaseAuthenticationService {
     try {
       _clearPendingData();
       await firebaseAuth.signOut();
-      await _googleSignIn.signOut();
+      await _googleSignIn?.signOut();
       await FacebookAuth.instance.logOut();
     } catch (e) {
       log?.e('Could not sign out of social account. $e');
