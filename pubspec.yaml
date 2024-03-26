@@ -1,4 +1,4 @@
-name: stacked_firebase_auth
+name: firebase_auth
 description: A service class that provides Firebase Authentication Functionality on a single api
 version: 2.20.0
 homepage: https://stacked.filledstacks.com/
