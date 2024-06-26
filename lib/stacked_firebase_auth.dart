@@ -4,3 +4,4 @@ export 'src/firebase_authentication_service.dart';
 export 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart'
     show FirebaseAuthException;
 export 'package:firebase_auth/firebase_auth.dart' show User;
+export 'package:firebase_core/firebase_core.dart';
