@@ -1,3 +1,11 @@
+## [2.20.1](https://github.com/Stacked-Org/firebase_auth/compare/v2.20.0...v2.20.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* Bumps versions ([b051bb1](https://github.com/Stacked-Org/firebase_auth/commit/b051bb144a781144caf06c547e23f1760d9d1b75))
+* **deps:** update dependency firebase_core to v3 ([#23](https://github.com/Stacked-Org/firebase_auth/issues/23)) ([99e0886](https://github.com/Stacked-Org/firebase_auth/commit/99e08865317a1405e655e65c92e2d71606b9f633))
+
 # [2.20.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.6...v2.20.0) (2024-02-07)
 
 
