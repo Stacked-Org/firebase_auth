@@ -17,7 +17,7 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  GoogleSignIn? _googleSignIn;
 
   FirebaseAuthenticationService({
     @Deprecated(
@@ -35,7 +35,7 @@ class FirebaseAuthenticationService {
   Future<UserCredential> _signInWithCredential(
     AuthCredential credential,
   ) async {
-    return firebaseAuth.signInWithCredential(credential);
+    return await firebaseAuth.signInWithCredential(credential);
   }
 
   /// Returns the current logged in Firebase User
@@ -77,7 +77,7 @@ class FirebaseAuthenticationService {
   ///   - iOS
   ///   - Web
   Future<FirebaseAuthenticationResult> signInWithGoogle(
-      {String? webLoginHint}) async {
+      {String? webLoginHint, List<String>? scopes}) async {
     try {
       UserCredential userCredential;
 
@@ -87,7 +87,7 @@ class FirebaseAuthenticationService {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.setCustomParameters(
             {'login_hint': webLoginHint ?? 'user@example.com'});
-
+        (scopes ?? []).forEach(googleProvider.addScope);
         userCredential = await FirebaseAuth.instance.signInWithPopup(
           googleProvider,
         );
@@ -96,8 +96,9 @@ class FirebaseAuthenticationService {
       /// On native platforms, a 3rd party library, like GoogleSignIn, is
       /// required to trigger the authentication flow.
       else {
+        _googleSignIn = GoogleSignIn(scopes: scopes ?? []);
         final GoogleSignInAccount? googleSignInAccount =
-            await _googleSignIn.signIn();
+            await _googleSignIn!.signIn();
         if (googleSignInAccount == null) {
           log?.i('Process is canceled by the user');
           return FirebaseAuthenticationResult.error(
@@ -125,6 +126,7 @@ class FirebaseAuthenticationService {
       return FirebaseAuthenticationResult(
         user: userCredential.user,
         additionalUserInfo: userCredential.additionalUserInfo,
+        oAuthAccessToken: userCredential.credential?.accessToken,
       );
     } on FirebaseAuthException catch (e) {
       log?.e(e);
@@ -510,7 +512,7 @@ class FirebaseAuthenticationService {
     try {
       _clearPendingData();
       await firebaseAuth.signOut();
-      await _googleSignIn.signOut();
+      await _googleSignIn?.signOut();
       await FacebookAuth.instance.logOut();
     } catch (e) {
       log?.e('Could not sign out of social account. $e');
@@ -597,17 +599,20 @@ class FirebaseAuthenticationResult {
 
   /// Firebase additional user information
   final AdditionalUserInfo? additionalUserInfo;
+  final String? oAuthAccessToken;
 
   /// Contains the error message for the request
   final String? errorMessage;
   final String? exceptionCode;
 
-  FirebaseAuthenticationResult({this.user, this.additionalUserInfo})
+  FirebaseAuthenticationResult(
+      {this.user, this.additionalUserInfo, this.oAuthAccessToken})
       : errorMessage = null,
         exceptionCode = null;
 
   FirebaseAuthenticationResult.error({this.errorMessage, this.exceptionCode})
       : user = null,
+        oAuthAccessToken = null,
         additionalUserInfo = null;
 
   /// Returns true if the response has an error associated with it
