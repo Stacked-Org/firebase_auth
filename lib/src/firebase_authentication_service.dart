@@ -504,11 +504,33 @@ class FirebaseAuthenticationService {
   }
 
   /// Validate phone number using the [otp] and link it with user account
-  Future<void> validateOtpAndLinkPhoneNumber(
+  ///
+  /// A [FirebaseAuthenticationResult] maybe returned with the following error
+  /// code:
+  /// - **mobileVerificationId-not-present**:
+  ///  - Returned if the [_mobileVerificationId] is null. This error could
+  ///    happen if the verification was skipped.
+  /// - **user-not-logged-in**:
+  ///  - Returned if the user is not logged in the Firebase instance.
+  /// - **link-phone-number-failure**:
+  ///  - Returned if the phone number could NOT be linked into the account.
+  Future<FirebaseAuthenticationResult> validateOtpAndLinkPhoneNumber(
     String otp,
   ) async {
     if (_mobileVerificationId == null) {
-      throw 'The _mobileVerificationId should not be null here. Verification was probably skipped.';
+      return FirebaseAuthenticationResult.error(
+        errorMessage:
+            'The _mobileVerificationId should not be null here. Verification was probably skipped.',
+        exceptionCode: 'mobileVerificationId-not-present',
+      );
+    }
+
+    if (!hasUser) {
+      return FirebaseAuthenticationResult.error(
+        errorMessage:
+            'The Firebase instance has no User which means the user is not logged in, please sign in the user before link the phone number.',
+        exceptionCode: 'user-not-logged-in',
+      );
     }
 
     try {
@@ -517,20 +539,26 @@ class FirebaseAuthenticationService {
         smsCode: otp,
       );
 
-      await firebaseAuth.currentUser?.linkWithCredential(
+      final userCredential = await firebaseAuth.currentUser!.linkWithCredential(
         phoneAuthCredential,
+      );
+
+      return FirebaseAuthenticationResult(
+        user: userCredential.user,
+        additionalUserInfo: userCredential.additionalUserInfo,
       );
     } on FirebaseAuthException catch (e) {
       log?.e('A Firebase exception has occurred. $e');
-      throw FirebaseAuthenticationResult.error(
+      return FirebaseAuthenticationResult.error(
         exceptionCode: e.code.toLowerCase(),
         errorMessage: getErrorMessageFromFirebaseException(e),
       );
     } on Exception catch (e) {
       log?.e('A general exception has occurred. $e');
-      throw FirebaseAuthenticationResult.error(
+      return FirebaseAuthenticationResult.error(
         errorMessage:
             'We could not link your phone number at this time. Please try again.',
+        exceptionCode: 'link-phone-number-failure',
       );
     }
   }
