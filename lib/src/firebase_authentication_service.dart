@@ -503,6 +503,38 @@ class FirebaseAuthenticationService {
     }
   }
 
+  /// Validate phone number using the [otp] and link it with user account
+  Future<void> validateOtpAndLinkPhoneNumber(
+    String otp,
+  ) async {
+    if (_mobileVerificationId == null) {
+      throw 'The _mobileVerificationId should not be null here. Verification was probably skipped.';
+    }
+
+    try {
+      final phoneAuthCredential = PhoneAuthProvider.credential(
+        verificationId: _mobileVerificationId!,
+        smsCode: otp,
+      );
+
+      await firebaseAuth.currentUser?.linkWithCredential(
+        phoneAuthCredential,
+      );
+    } on FirebaseAuthException catch (e) {
+      log?.e('A Firebase exception has occurred. $e');
+      throw FirebaseAuthenticationResult.error(
+        exceptionCode: e.code.toLowerCase(),
+        errorMessage: getErrorMessageFromFirebaseException(e),
+      );
+    } on Exception catch (e) {
+      log?.e('A general exception has occurred. $e');
+      throw FirebaseAuthenticationResult.error(
+        errorMessage:
+            'We could not link your phone number at this time. Please try again.',
+      );
+    }
+  }
+
   /// Sign out of the social accounts that have been used
   Future logout() async {
     log?.i('logout');
