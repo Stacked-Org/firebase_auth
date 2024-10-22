@@ -564,7 +564,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Sign out of the social accounts that have been used
-  Future logout() async {
+  Future<void> logout() async {
     log?.i('logout');
 
     try {
@@ -582,7 +582,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Send reset password link to email
-  Future sendResetPasswordLink(String email) async {
+  Future<bool> sendResetPasswordLink(String email) async {
     log?.i('email:$email');
 
     try {
@@ -595,7 +595,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Validate the current [password] of the Firebase User
-  Future validatePassword(String password) async {
+  Future<dynamic> validatePassword(String password) async {
     try {
       final authCredentials = EmailAuthProvider.credential(
         email: firebaseAuth.currentUser?.email ?? '',
@@ -609,27 +609,28 @@ class FirebaseAuthenticationService {
     } catch (e) {
       log?.e('Could not validate the user password. $e');
       return FirebaseAuthenticationResult.error(
-          errorMessage: 'The current password is not valid.');
+        errorMessage: 'The current password is not valid.',
+      );
     }
   }
 
   /// Update the [password] of the Firebase User
-  Future updatePassword(String password) async {
+  Future<void> updatePassword(String password) async {
     await firebaseAuth.currentUser?.updatePassword(password);
   }
 
   /// Update the [email] of the Firebase User
-  Future updateEmail(String email) async {
+  Future<void> updateEmail(String email) async {
     await firebaseAuth.currentUser?.updateEmail(email);
   }
 
   /// Update the [displayName] of the Firebase User
-  Future updateDisplayName(String displayName) async {
+  Future<void> updateDisplayName(String displayName) async {
     await firebaseAuth.currentUser?.updateDisplayName(displayName);
   }
 
   /// Update the [photoURL] of the Firebase User
-  Future updatePhotoURL(String photoUrl) async {
+  Future<void> updatePhotoURL(String photoUrl) async {
     await firebaseAuth.currentUser?.updatePhotoURL(photoUrl);
   }
 
