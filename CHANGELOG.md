@@ -1,3 +1,10 @@
+# [2.21.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.20.1...v2.21.0) (2024-10-24)
+
+
+### Features
+
+* add validateOtpAndLinkPhoneNumber method ([#26](https://github.com/Stacked-Org/firebase_auth/issues/26)) ([00d3a66](https://github.com/Stacked-Org/firebase_auth/commit/00d3a66c45d735eb2629bb3ffb2a9b1236441bd8))
+
 ## [2.20.1](https://github.com/Stacked-Org/firebase_auth/compare/v2.20.0...v2.20.1) (2024-08-29)
 
 
