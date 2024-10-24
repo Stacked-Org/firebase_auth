@@ -5,7 +5,7 @@ import 'package:stacked/stacked.dart';
 import 'secured_area_viewmodel.dart';
 
 class SecuredAreaView extends StackedView<SecuredAreaViewModel> {
-  const SecuredAreaView({Key? key}) : super(key: key);
+  const SecuredAreaView({super.key});
 
   @override
   Widget builder(
@@ -14,7 +14,7 @@ class SecuredAreaView extends StackedView<SecuredAreaViewModel> {
     Widget? child,
   ) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Container(
         padding: const EdgeInsets.only(left: 25.0, right: 25.0),
         child: Center(

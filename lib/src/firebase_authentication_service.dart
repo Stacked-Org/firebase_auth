@@ -59,6 +59,10 @@ class FirebaseAuthenticationService {
   }
 
   /// Returns `true` when email has a user registered
+  @Deprecated(
+    'emailExists() has been deprecated. '
+    'Migrating off of this method is recommended as a security best-practice. Learn more in the Identity Platform documentation: ',
+  )
   Future<bool> emailExists(String email) async {
     try {
       final signInMethods =
@@ -620,8 +624,16 @@ class FirebaseAuthenticationService {
   }
 
   /// Update the [email] of the Firebase User
+  @Deprecated(
+    'updateEmail() has been deprecated. Please use verifyBeforeUpdateEmail() instead.',
+  )
   Future<void> updateEmail(String email) async {
     await firebaseAuth.currentUser?.updateEmail(email);
+  }
+
+  /// Sends a verification email to a new email address. The user's email will be updated to the new one after being verified.
+  Future<void> verifyBeforeUpdateEmail(String email) async {
+    await firebaseAuth.currentUser?.verifyBeforeUpdateEmail(email);
   }
 
   /// Update the [displayName] of the Firebase User
