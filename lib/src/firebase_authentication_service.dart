@@ -59,6 +59,10 @@ class FirebaseAuthenticationService {
   }
 
   /// Returns `true` when email has a user registered
+  @Deprecated(
+    'emailExists() has been deprecated. '
+    'Migrating off of this method is recommended as a security best-practice. Learn more in the Identity Platform documentation: ',
+  )
   Future<bool> emailExists(String email) async {
     try {
       final signInMethods =
@@ -503,8 +507,68 @@ class FirebaseAuthenticationService {
     }
   }
 
+  /// Validate phone number using the [otp] and link it with user account
+  ///
+  /// A [FirebaseAuthenticationResult] maybe returned with the following error
+  /// code:
+  /// - **mobileVerificationId-not-present**:
+  ///  - Returned if the [_mobileVerificationId] is null. This error could
+  ///    happen if the verification was skipped.
+  /// - **user-not-logged-in**:
+  ///  - Returned if the user is not logged in the Firebase instance.
+  /// - **link-phone-number-failure**:
+  ///  - Returned if the phone number could NOT be linked into the account.
+  Future<FirebaseAuthenticationResult> validateOtpAndLinkPhoneNumber(
+    String otp,
+  ) async {
+    if (_mobileVerificationId == null) {
+      return FirebaseAuthenticationResult.error(
+        errorMessage:
+            'The _mobileVerificationId should not be null here. Verification was probably skipped.',
+        exceptionCode: 'mobileVerificationId-not-present',
+      );
+    }
+
+    if (!hasUser) {
+      return FirebaseAuthenticationResult.error(
+        errorMessage:
+            'The Firebase instance has no User which means the user is not logged in, please sign in the user before link the phone number.',
+        exceptionCode: 'user-not-logged-in',
+      );
+    }
+
+    try {
+      final phoneAuthCredential = PhoneAuthProvider.credential(
+        verificationId: _mobileVerificationId!,
+        smsCode: otp,
+      );
+
+      final userCredential = await firebaseAuth.currentUser!.linkWithCredential(
+        phoneAuthCredential,
+      );
+
+      return FirebaseAuthenticationResult(
+        user: userCredential.user,
+        additionalUserInfo: userCredential.additionalUserInfo,
+      );
+    } on FirebaseAuthException catch (e) {
+      log?.e('A Firebase exception has occurred. $e');
+      return FirebaseAuthenticationResult.error(
+        exceptionCode: e.code.toLowerCase(),
+        errorMessage: getErrorMessageFromFirebaseException(e),
+      );
+    } on Exception catch (e) {
+      log?.e('A general exception has occurred. $e');
+      return FirebaseAuthenticationResult.error(
+        errorMessage:
+            'We could not link your phone number at this time. Please try again.',
+        exceptionCode: 'link-phone-number-failure',
+      );
+    }
+  }
+
   /// Sign out of the social accounts that have been used
-  Future logout() async {
+  Future<void> logout() async {
     log?.i('logout');
 
     try {
@@ -522,7 +586,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Send reset password link to email
-  Future sendResetPasswordLink(String email) async {
+  Future<bool> sendResetPasswordLink(String email) async {
     log?.i('email:$email');
 
     try {
@@ -535,7 +599,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Validate the current [password] of the Firebase User
-  Future validatePassword(String password) async {
+  Future<dynamic> validatePassword(String password) async {
     try {
       final authCredentials = EmailAuthProvider.credential(
         email: firebaseAuth.currentUser?.email ?? '',
@@ -549,27 +613,36 @@ class FirebaseAuthenticationService {
     } catch (e) {
       log?.e('Could not validate the user password. $e');
       return FirebaseAuthenticationResult.error(
-          errorMessage: 'The current password is not valid.');
+        errorMessage: 'The current password is not valid.',
+      );
     }
   }
 
   /// Update the [password] of the Firebase User
-  Future updatePassword(String password) async {
+  Future<void> updatePassword(String password) async {
     await firebaseAuth.currentUser?.updatePassword(password);
   }
 
   /// Update the [email] of the Firebase User
-  Future updateEmail(String email) async {
+  @Deprecated(
+    'updateEmail() has been deprecated. Please use verifyBeforeUpdateEmail() instead.',
+  )
+  Future<void> updateEmail(String email) async {
     await firebaseAuth.currentUser?.updateEmail(email);
   }
 
+  /// Sends a verification email to a new email address. The user's email will be updated to the new one after being verified.
+  Future<void> verifyBeforeUpdateEmail(String email) async {
+    await firebaseAuth.currentUser?.verifyBeforeUpdateEmail(email);
+  }
+
   /// Update the [displayName] of the Firebase User
-  Future updateDisplayName(String displayName) async {
+  Future<void> updateDisplayName(String displayName) async {
     await firebaseAuth.currentUser?.updateDisplayName(displayName);
   }
 
   /// Update the [photoURL] of the Firebase User
-  Future updatePhotoURL(String photoUrl) async {
+  Future<void> updatePhotoURL(String photoUrl) async {
     await firebaseAuth.currentUser?.updatePhotoURL(photoUrl);
   }
 
