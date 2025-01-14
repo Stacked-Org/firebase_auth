@@ -699,6 +699,8 @@ String getErrorMessageFromFirebaseException(FirebaseAuthException exception) {
       return 'Your password is too weak. Please use a stronger password.';
     case 'wrong-password':
       return 'You seemed to have entered the wrong password. Double check it and try again.';
+    case 'invalid-credential':
+      return 'We didn\'t recognize that email or password. Double check your details or sign up if you don\'t have an account.';
     default:
       return exception.message ??
           'Something went wrong on our side. Please try again';
