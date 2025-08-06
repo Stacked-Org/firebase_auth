@@ -41,7 +41,7 @@ class FirebaseAuthenticationService {
   }
 
   /// Returns the latest userToken stored in the Firebase Auth lib
-  Future<String>? get userToken {
+  Future<String?>? get userToken {
     return firebaseAuth.currentUser?.getIdToken();
   }
 
