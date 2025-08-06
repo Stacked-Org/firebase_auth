@@ -1,3 +1,53 @@
+# [2.21.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.20.1...v2.21.0) (2024-10-24)
+
+
+### Features
+
+* add validateOtpAndLinkPhoneNumber method ([#26](https://github.com/Stacked-Org/firebase_auth/issues/26)) ([00d3a66](https://github.com/Stacked-Org/firebase_auth/commit/00d3a66c45d735eb2629bb3ffb2a9b1236441bd8))
+
+## [2.20.1](https://github.com/Stacked-Org/firebase_auth/compare/v2.20.0...v2.20.1) (2024-08-29)
+
+
+### Bug Fixes
+
+* Bumps versions ([b051bb1](https://github.com/Stacked-Org/firebase_auth/commit/b051bb144a781144caf06c547e23f1760d9d1b75))
+* **deps:** update dependency firebase_core to v3 ([#23](https://github.com/Stacked-Org/firebase_auth/issues/23)) ([99e0886](https://github.com/Stacked-Org/firebase_auth/commit/99e08865317a1405e655e65c92e2d71606b9f633))
+
+# [2.20.0](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.6...v2.20.0) (2024-02-07)
+
+
+### Features
+
+* add Facebook authentication support ([#17](https://github.com/Stacked-Org/firebase_auth/issues/17)) ([2cd6afc](https://github.com/Stacked-Org/firebase_auth/commit/2cd6afc89dbb23e56072835e46f1503fa665dd04))
+
+## [2.19.6](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.5...v2.19.6) (2023-10-23)
+
+
+### Bug Fixes
+
+* Update sign_in_with_apple for compatibility with Gradle 8.0 ([#16](https://github.com/Stacked-Org/firebase_auth/issues/16)) ([792bf2f](https://github.com/Stacked-Org/firebase_auth/commit/792bf2f3242d9560f711fda90abce72af789e024))
+
+## [2.19.5](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.4...v2.19.5) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency firebase_auth_platform_interface to v7 ([#14](https://github.com/Stacked-Org/firebase_auth/issues/14)) ([d3f0724](https://github.com/Stacked-Org/firebase_auth/commit/d3f07245497c44164ccfd9f26da18c405cb48dd9))
+
+## [2.19.4](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.3...v2.19.4) (2023-07-31)
+
+
+### Bug Fixes
+
+* downgrade logger dependency ([#10](https://github.com/Stacked-Org/firebase_auth/issues/10)) ([86b84c1](https://github.com/Stacked-Org/firebase_auth/commit/86b84c1b90a0d35aad97295fa60b1891e6c1ef8a))
+
+## [2.19.3](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.2...v2.19.3) (2023-07-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency logger to v2 ([#9](https://github.com/Stacked-Org/firebase_auth/issues/9)) ([8ee5db8](https://github.com/Stacked-Org/firebase_auth/commit/8ee5db8b2996cf5b0c5213c008fddf533de6804e))
+
 ## [2.19.2](https://github.com/Stacked-Org/firebase_auth/compare/v2.19.1...v2.19.2) (2023-03-23)
 
 
@@ -45,7 +95,7 @@
 
 ## 0.2.12
 - Adds sign in with phone number
-- Adds verify otp 
+- Adds verify otp
 
 ## 0.2.11
 

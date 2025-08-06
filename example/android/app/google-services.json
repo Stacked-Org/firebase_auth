@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "{your-project-number}",
+    "project_id": "{your-project-id}",
+    "storage_bucket": "{your-storage-bucket}"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "{your-app-id}",
+        "android_client_info": {
+          "package_name": "{your-package-name}"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "{your-app-id}.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "{your-package-name}",
+            "certificate_hash": "{your-certificate-hash}"
+          }
+        },
+        {
+          "client_id": "{your-app-id}.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "{your-api-key}"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "{your-app-id}.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "{your-app-id}.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "{your-package-name}"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "{your-app-id}",
+        "android_client_info": {
+          "package_name": "{your-package-name}"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "{your-app-id}.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "{your-api-key}"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "{your-app-id}.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "{your-app-id}.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "{your-package-name}"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
