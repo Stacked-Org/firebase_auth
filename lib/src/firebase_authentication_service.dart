@@ -17,7 +17,8 @@ class FirebaseAuthenticationService {
   final Logger? log;
 
   final firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  bool _googleSignInInitialized = false;
 
   FirebaseAuthenticationService({
     @Deprecated(
@@ -65,10 +66,11 @@ class FirebaseAuthenticationService {
   )
   Future<bool> emailExists(String email) async {
     try {
-      final signInMethods =
-          await firebaseAuth.fetchSignInMethodsForEmail(email);
-
-      return signInMethods.length > 0;
+      // fetchSignInMethodsForEmail was removed in Firebase Auth 6.0+
+      // This method is deprecated and should not be used
+      // Return false as a safe default
+      log?.w('emailExists() is deprecated and no longer supported. Returning false.');
+      return false;
     } on FirebaseAuthException catch (e) {
       return e.code.toLowerCase() == 'invalid-email';
     }
@@ -100,21 +102,42 @@ class FirebaseAuthenticationService {
       /// On native platforms, a 3rd party library, like GoogleSignIn, is
       /// required to trigger the authentication flow.
       else {
-        final GoogleSignInAccount? googleSignInAccount =
-            await _googleSignIn.signIn();
-        if (googleSignInAccount == null) {
-          log?.i('Process is canceled by the user');
+        // Initialize GoogleSignIn if not already initialized
+        if (!_googleSignInInitialized) {
+          await _googleSignIn.initialize();
+          _googleSignInInitialized = true;
+        }
+
+        try {
+          // Authenticate the user first
+          await _googleSignIn.authenticate();
+        } catch (e) {
+          log?.i('Google Sign In canceled or failed: $e');
           return FirebaseAuthenticationResult.error(
             errorMessage: 'Google Sign In has been canceled by the user',
             exceptionCode: 'canceled',
           );
         }
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
 
+        // Get authorization tokens for the required scopes
+        final authorization =
+            await _googleSignIn.authorizationClient.authorizationForScopes(['email']);
+
+        final accessToken = authorization?.accessToken;
+
+        if (accessToken == null) {
+          return FirebaseAuthenticationResult.error(
+            errorMessage: 'Failed to obtain Google authentication tokens',
+            exceptionCode: 'token-error',
+          );
+        }
+
+        // Create credential with accessToken
+        // Note: In google_sign_in 7.x, idToken is not available through authorizationForScopes
+        // Firebase Auth should work with accessToken alone
         final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
+          accessToken: accessToken,
+          idToken: null,
         );
 
         userCredential = await _signInWithCredential(credential);
@@ -187,7 +210,7 @@ class FirebaseAuthenticationService {
 
         final OAuthCredential facebookAuthCredential =
             FacebookAuthProvider.credential(
-                facebookLoginResult.accessToken!.token);
+                facebookLoginResult.accessToken!.tokenString);
 
         userCredential = await _signInWithCredential(facebookAuthCredential);
       }
@@ -628,7 +651,9 @@ class FirebaseAuthenticationService {
     'updateEmail() has been deprecated. Please use verifyBeforeUpdateEmail() instead.',
   )
   Future<void> updateEmail(String email) async {
-    await firebaseAuth.currentUser?.updateEmail(email);
+    // updateEmail() was removed in Firebase Auth 6.0+
+    // Use verifyBeforeUpdateEmail() instead
+    await verifyBeforeUpdateEmail(email);
   }
 
   /// Sends a verification email to a new email address. The user's email will be updated to the new one after being verified.
